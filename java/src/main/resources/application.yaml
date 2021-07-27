@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: java-tracing-demo
+  cloud:
+    azure:
+      eventhub:
+        connection-string: ${EVENTHUB_CONNECTION_STRING}
+        checkpoint-storage-account: ${CHECKPOINT_STORAGE_ACCOUNT}
+        checkpoint-access-key: ${CHECKPOINT_STORAGE_ACCESS_KEY}
+        checkpoint-container: ${CHECKPOINT_CONTAINER_NAME}
+        eventhub-name: ${EVENTHUB_NAME}
+
+    stream:
+      bindings:
+        consume-in-0:
+          destination: ${EVENTHUB_NAME}
+          group: $Default
+
+      eventhub:
+        bindings:
+          consume-in-0:
+            consumer:
+              checkpoint-mode: MANUAL
+      function:
+        definition: consume;
+      poller:
+        initial-delay: 0
+        fixed-delay: 1000
