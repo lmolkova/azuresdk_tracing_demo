@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   jaeger:
     image: jaegertracing/all-in-one:latest
@@ -17,24 +17,44 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - demo      
+      - demo
     depends_on:
       - jaeger
     environment:
       - OTEL_TRACES_EXPORTER=jaeger
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=java-demo     
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=java-demo
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - CHECKPOINT_STORAGE_ACCOUNT=${CHECKPOINT_STORAGE_ACCOUNT}
       - CHECKPOINT_STORAGE_ACCESS_KEY=${CHECKPOINT_STORAGE_ACCESS_KEY}
-      - CHECKPOINT_CONTAINER_NAME=${CHECKPOINT_CONTAINER_NAME}      
+      - CHECKPOINT_CONTAINER_NAME=${CHECKPOINT_CONTAINER_NAME}
+  nodejs:
+    build:
+      context: ./nodejs
+      args:
+        - TELEMETRY_DESTINATION=jaeger
+    ports:
+      - 3000:3000
+    neworks:
+      - demo
+    depends_on:
+      - jaeger
+    environment:
+      - OTEL_TRACES_EXPORTER=jaeger
+      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=java-demo
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - CHECKPOINT_STORAGE_ACCOUNT=${CHECKPOINT_STORAGE_ACCOUNT}
+      - CHECKPOINT_STORAGE_ACCESS_KEY=${CHECKPOINT_STORAGE_ACCESS_KEY}
+      - CHECKPOINT_CONTAINER_NAME=${CHECKPOINT_CONTAINER_NAME}
   dotnet:
     build: ./dotnet
     ports:
       - "5000:80"
     networks:
-      - demo      
+      - demo
     depends_on:
       - java
       - jaeger
