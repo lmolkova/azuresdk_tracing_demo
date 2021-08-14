@@ -7,7 +7,6 @@ RUN apk add --no-cache bash
 
 WORKDIR /app
 
-COPY .mvn/ .mvn
 COPY mvnw pom.xml downloadAgents.sh ./
 COPY src ./src
 
