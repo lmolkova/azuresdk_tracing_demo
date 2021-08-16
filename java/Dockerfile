@@ -9,6 +9,7 @@ WORKDIR /app
 
 COPY mvnw pom.xml downloadAgents.sh ./
 COPY src ./src
+COPY .mvn ./.mvn
 
 RUN ./downloadAgents.sh $TELEMETRY_DESTINATION
 RUN ./mvnw dependency:go-offline
