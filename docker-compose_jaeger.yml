@@ -36,14 +36,14 @@ services:
         - TELEMETRY_DESTINATION=jaeger
     ports:
       - 3000:3000
-    neworks:
+    networks:
       - demo
     depends_on:
       - jaeger
     environment:
       - OTEL_TRACES_EXPORTER=jaeger
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=java-demo
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=nodejs-demo
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - CHECKPOINT_STORAGE_ACCOUNT=${CHECKPOINT_STORAGE_ACCOUNT}
