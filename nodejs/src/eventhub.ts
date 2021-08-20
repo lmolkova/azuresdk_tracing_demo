@@ -7,14 +7,18 @@ import {
 import { BlobCheckpointStore } from "@azure/eventhubs-checkpointstore-blob";
 import { ContainerClient } from "@azure/storage-blob";
 import { getEnvironmentVariable } from "./utils";
+import { context as otContext } from "@opentelemetry/api";
 
 // TODO: validate env vars
 
 const eventHubHandlers: SubscriptionEventHandlers = {
   processEvents: async (events, context) => {
-    for (const event of events) {
-      await context.updateCheckpoint(event)
-    }
+    await otContext.with(otContext.active(), async () => {
+      for (const event of events) {
+        console.log(`Received event: ${event.body}`);
+        await context.updateCheckpoint(event);
+      }
+    });
   },
   processError: (err) => {
     console.error(err);
@@ -23,7 +27,10 @@ const eventHubHandlers: SubscriptionEventHandlers = {
 };
 
 async function initializeCheckpointStore() {
-  const containerClient = new ContainerClient(getEnvironmentVariable("STORAGE_CONNECTION_STRING"), getEnvironmentVariable("STORAGE_CONTAINER_NAME"));
+  const containerClient = new ContainerClient(
+    getEnvironmentVariable("STORAGE_CONNECTION_STRING"),
+    getEnvironmentVariable("STORAGE_CONTAINER_NAME")
+  );
   await containerClient.createIfNotExists();
   return new BlobCheckpointStore(containerClient);
 }
@@ -39,7 +46,7 @@ export async function initializeEventHub() {
 
   const producer = new EventHubProducerClient(
     getEnvironmentVariable("EVENTHUB_CONNECTION_STRING"),
-    getEnvironmentVariable("EVENTHUB_NAME"),
+    getEnvironmentVariable("EVENTHUB_NAME")
   );
 
   consumer.subscribe(eventHubHandlers, {
