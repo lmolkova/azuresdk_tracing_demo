@@ -15,3 +15,4 @@ EXPOSE 3000
 ENV PORT=3000 
 
 CMD ["npm", "run", "start"]
+# TODO: use build stages to compile, then run in prod mode
