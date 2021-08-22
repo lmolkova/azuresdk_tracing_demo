@@ -6,42 +6,52 @@ import {
 } from "@azure/event-hubs";
 import { BlobCheckpointStore } from "@azure/eventhubs-checkpointstore-blob";
 import { ContainerClient } from "@azure/storage-blob";
+import {
+  context as otContext,
+  SpanStatusCode,
+  trace
+} from "@opentelemetry/api";
+import { getTracer } from "./tracing";
 import { getEnvironmentVariable } from "./utils";
-import { context as otContext } from "@opentelemetry/api";
-
-// TODO: validate env vars
 
 const eventHubHandlers: SubscriptionEventHandlers = {
   processEvents: async (events, context) => {
-    await otContext.with(otContext.active(), async () => {
-      for (const event of events) {
-        console.log(`Received event: ${event.body}`);
-        await context.updateCheckpoint(event);
+    if (events.length === 0) {
+      return;
+    }
+
+    return getTracer().startActiveSpan(
+      "eventhub-processEvents",
+      async (span) => {
+        for (const event of events) {
+          console.log(`Received event: ${JSON.stringify(event.body)}`);
+        }
+        await context.updateCheckpoint(events[events.length - 1]);
+        span.end();
       }
-    });
+    );
   },
   processError: (err) => {
-    console.error(err);
+    getTracer().startActiveSpan("eventhub-processError", (span) => {
+      span.recordException(err);
+      span.setStatus({ code: SpanStatusCode.ERROR });
+      span.end();
+    });
     return Promise.reject(err);
   }
 };
 
-async function initializeCheckpointStore() {
+export function initializeEventHub() {
   const containerClient = new ContainerClient(
     getEnvironmentVariable("STORAGE_CONNECTION_STRING"),
     getEnvironmentVariable("STORAGE_CONTAINER_NAME")
   );
-  await containerClient.createIfNotExists();
-  return new BlobCheckpointStore(containerClient);
-}
 
-export async function initializeEventHub() {
-  const checkpointStore = await initializeCheckpointStore();
   const consumer = new EventHubConsumerClient(
     getEnvironmentVariable("EVENTHUB_CONSUMER_GROUP"),
     getEnvironmentVariable("EVENTHUB_CONNECTION_STRING"),
     getEnvironmentVariable("EVENTHUB_NAME"),
-    checkpointStore
+    new BlobCheckpointStore(containerClient)
   );
 
   const producer = new EventHubProducerClient(
@@ -49,10 +59,7 @@ export async function initializeEventHub() {
     getEnvironmentVariable("EVENTHUB_NAME")
   );
 
-  consumer.subscribe(eventHubHandlers, {
-    // todo: remove this when i can push new events
-    startPosition: earliestEventPosition
-  });
+  consumer.subscribe(eventHubHandlers);
 
   return { consumer, producer };
 }
