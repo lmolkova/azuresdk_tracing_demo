@@ -1,4 +1,4 @@
-import { context, SpanStatusCode, trace } from "@opentelemetry/api";
+import { SpanStatusCode } from "@opentelemetry/api";
 import express from "express";
 import { initializeEventHub } from "./eventhub";
 import { configureTracing, getTracer } from "./tracing";
@@ -10,7 +10,8 @@ app.use(express.json());
 
 configureTracing();
 
-const { consumer, producer } = initializeEventHub();
+// TODO: what HTTP endpoints should this service accept?
+const { producer } = initializeEventHub();
 
 app.post("/message", async (req, res) => {
   const tracer = getTracer();

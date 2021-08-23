@@ -5,7 +5,10 @@ import {
   SubscriptionEventHandlers
 } from "@azure/event-hubs";
 import { BlobCheckpointStore } from "@azure/eventhubs-checkpointstore-blob";
-import { ContainerClient } from "@azure/storage-blob";
+import {
+  ContainerClient,
+  StorageSharedKeyCredential
+} from "@azure/storage-blob";
 import {
   context as otContext,
   SpanStatusCode,
@@ -14,6 +17,7 @@ import {
 import { getTracer } from "./tracing";
 import { getEnvironmentVariable } from "./utils";
 
+// TODO: work out the naming conventions of these spans.
 const eventHubHandlers: SubscriptionEventHandlers = {
   processEvents: async (events, context) => {
     if (events.length === 0) {
@@ -43,8 +47,8 @@ const eventHubHandlers: SubscriptionEventHandlers = {
 
 export function initializeEventHub() {
   const containerClient = new ContainerClient(
-    getEnvironmentVariable("STORAGE_CONNECTION_STRING"),
-    getEnvironmentVariable("STORAGE_CONTAINER_NAME")
+    getEnvironmentVariable("CHECKPOINT_STORAGE_CONNECTION_STRING"),
+    getEnvironmentVariable("CHECKPOINT_STORAGE_CONTAINER_NAME")
   );
 
   const consumer = new EventHubConsumerClient(

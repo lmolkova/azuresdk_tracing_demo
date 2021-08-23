@@ -28,5 +28,5 @@ export function configureTracing() {
 }
 
 export function getTracer() {
-  return trace.getTracer("nodejs-demo");
+  return trace.getTracer("nodejs-demo"); // TODO: should this env.OTEL_SERVICE_NAME?
 }
