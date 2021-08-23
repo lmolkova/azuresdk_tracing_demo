@@ -9,7 +9,6 @@ import { Resource } from "@opentelemetry/resources";
 import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
 import { getEnvironmentVariable } from "./utils";
-import { trace } from "@opentelemetry/api";
 
 export function configureTracing() {
   const provider = new NodeTracerProvider({
@@ -25,8 +24,4 @@ export function configureTracing() {
   registerInstrumentations({
     instrumentations: [getNodeAutoInstrumentations()]
   });
-}
-
-export function getTracer() {
-  return trace.getTracer("nodejs-demo"); // TODO: should this env.OTEL_SERVICE_NAME?
 }

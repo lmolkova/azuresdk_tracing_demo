@@ -1,20 +1,10 @@
 import {
-  earliestEventPosition,
   EventHubConsumerClient,
   EventHubProducerClient,
   SubscriptionEventHandlers
 } from "@azure/event-hubs";
 import { BlobCheckpointStore } from "@azure/eventhubs-checkpointstore-blob";
-import {
-  ContainerClient,
-  StorageSharedKeyCredential
-} from "@azure/storage-blob";
-import {
-  context as otContext,
-  SpanStatusCode,
-  trace
-} from "@opentelemetry/api";
-import { getTracer } from "./tracing";
+import { ContainerClient } from "@azure/storage-blob";
 import { getEnvironmentVariable } from "./utils";
 
 // TODO: work out the naming conventions of these spans.
@@ -24,23 +14,12 @@ const eventHubHandlers: SubscriptionEventHandlers = {
       return;
     }
 
-    return getTracer().startActiveSpan(
-      "eventhub-processEvents",
-      async (span) => {
-        for (const event of events) {
-          console.log(`Received event: ${JSON.stringify(event.body)}`);
-        }
-        await context.updateCheckpoint(events[events.length - 1]);
-        span.end();
-      }
-    );
+    for (const event of events) {
+      console.log(`Received event: ${JSON.stringify(event.body)}`);
+    }
+    await context.updateCheckpoint(events[events.length - 1]);
   },
   processError: (err) => {
-    getTracer().startActiveSpan("eventhub-processError", (span) => {
-      span.recordException(err);
-      span.setStatus({ code: SpanStatusCode.ERROR });
-      span.end();
-    });
     return Promise.reject(err);
   }
 };
