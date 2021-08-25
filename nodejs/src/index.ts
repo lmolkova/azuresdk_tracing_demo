@@ -1,14 +1,12 @@
-import { SpanStatusCode } from "@opentelemetry/api";
+import { configureTracing } from "./tracing";
+configureTracing();
 import express from "express";
 import { initializeEventHub } from "./eventhub";
-import { configureTracing } from "./tracing";
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(express.json());
-
-configureTracing();
 
 // TODO: what HTTP endpoints should this service accept?
 const { producer } = initializeEventHub();
