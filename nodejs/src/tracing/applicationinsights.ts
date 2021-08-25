@@ -7,6 +7,7 @@ export function configure() {
   );
 
   setupAppInsights(instrumentationKey)
+    .setAutoDependencyCorrelation(true)
     .setAutoCollectConsole(true)
     .setAutoCollectPerformance(true)
     .setAutoCollectRequests(true)

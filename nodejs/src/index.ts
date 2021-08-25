@@ -3,8 +3,9 @@ import { configureTracing } from "./tracing";
 configureTracing();
 import express from "express";
 import { initializeEventHub } from "./eventhub";
+import { getEnvironmentVariable } from "./utils";
 
-const PORT = process.env.PORT || 5000;
+const PORT = getEnvironmentVariable("SERVER_PORT");
 
 const app = express();
 app.use(express.json());

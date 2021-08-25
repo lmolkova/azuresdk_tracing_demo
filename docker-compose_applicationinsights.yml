@@ -21,24 +21,19 @@ services:
   nodejs:
     build:
       context: ./nodejs
-      args:
-        - TELEMETRY_DESTINATION=jaeger
     ports:
       - 3000:3000
     networks:
       - demo
-    depends_on:
-      - jaeger
     environment:
       - TELEMETRY_DESTINATION=applicationinsightssdk
-      - OTEL_TRACES_EXPORTER=jaeger
-      - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
       - OTEL_SERVICE_NAME=nodejs-demo
       - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
       - EVENTHUB_NAME=${EVENTHUB_NAME}
       - EVENTHUB_CONSUMER_GROUP=${EVENTHUB_CONSUMER_GROUP}
       - CHECKPOINT_STORAGE_CONNECTION_STRING=${CHECKPOINT_STORAGE_CONNECTION_STRING}
       - CHECKPOINT_CONTAINER_NAME=${CHECKPOINT_CONTAINER_NAME}
+      - SERVER_PORT=3000
   dotnet:
     build: ./dotnet
     ports:

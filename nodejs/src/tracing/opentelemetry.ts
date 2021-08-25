@@ -18,7 +18,6 @@ export function configure() {
     })
   });
   provider.addSpanProcessor(new SimpleSpanProcessor(new JaegerExporter()));
-  provider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
   provider.register();
 
   registerInstrumentations({
