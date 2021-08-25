@@ -1,3 +1,4 @@
+// configure tracing before any other imports to allow them to patch other imports
 import { configureTracing } from "./tracing";
 configureTracing();
 import express from "express";

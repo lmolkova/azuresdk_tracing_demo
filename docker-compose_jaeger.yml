@@ -41,6 +41,7 @@ services:
     depends_on:
       - jaeger
     environment:
+      - TELEMETRY_DESTINATION=jaeger
       - OTEL_TRACES_EXPORTER=jaeger
       - OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250
       - OTEL_SERVICE_NAME=nodejs-demo

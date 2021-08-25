@@ -21,6 +21,7 @@
     "@opentelemetry/node": "^0.24.0",
     "@opentelemetry/semantic-conventions": "^0.24.0",
     "@opentelemetry/tracing": "^0.24.0",
+    "applicationinsights": "^2.1.5",
     "express": "^4.17.1",
     "tslib": "^2.3.1"
   },

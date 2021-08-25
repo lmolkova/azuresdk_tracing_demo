@@ -27,7 +27,7 @@ const eventHubHandlers: SubscriptionEventHandlers = {
 export function initializeEventHub() {
   const containerClient = new ContainerClient(
     getEnvironmentVariable("CHECKPOINT_STORAGE_CONNECTION_STRING"),
-    getEnvironmentVariable("CHECKPOINT_STORAGE_CONTAINER_NAME")
+    getEnvironmentVariable("CHECKPOINT_CONTAINER_NAME")
   );
 
   const consumer = new EventHubConsumerClient(

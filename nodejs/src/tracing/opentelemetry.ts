@@ -8,9 +8,9 @@ import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { Resource } from "@opentelemetry/resources";
 import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
 import { SemanticResourceAttributes } from "@opentelemetry/semantic-conventions";
-import { getEnvironmentVariable } from "./utils";
+import { getEnvironmentVariable } from "../utils";
 
-export function configureTracing() {
+export function configure() {
   const provider = new NodeTracerProvider({
     resource: new Resource({
       [SemanticResourceAttributes.SERVICE_NAME]:
