@@ -31,7 +31,10 @@ export function initializeEventHub() {
   );
 
   const consumer = new EventHubConsumerClient(
-    getEnvironmentVariable("EVENTHUB_CONSUMER_GROUP"),
+    getEnvironmentVariable(
+      "EVENTHUB_CONSUMER_GROUP",
+      EventHubConsumerClient.defaultConsumerGroupName
+    ),
     getEnvironmentVariable("EVENTHUB_CONNECTION_STRING"),
     getEnvironmentVariable("EVENTHUB_NAME"),
     new BlobCheckpointStore(containerClient)
