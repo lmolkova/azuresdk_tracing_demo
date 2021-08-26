@@ -17,7 +17,14 @@ export function configure() {
         getEnvironmentVariable("OTEL_SERVICE_NAME")
     })
   });
-  provider.addSpanProcessor(new SimpleSpanProcessor(new JaegerExporter()));
+  provider.addSpanProcessor(
+    new SimpleSpanProcessor(
+      new JaegerExporter({
+        host: getEnvironmentVariable("OTEL_EXPORTER_JAEGER_HOST", "")
+      })
+    )
+  );
+
   provider.register();
 
   registerInstrumentations({
