@@ -1,12 +1,9 @@
-import { getEnvironmentVariable } from "../utils";
 import { setup as setupAppInsights } from "applicationinsights";
 
 export function configure() {
-  const instrumentationKey = getEnvironmentVariable(
-    "APPINSIGHTS_INSTRUMENTATIONKEY"
-  );
-
-  setupAppInsights(instrumentationKey)
+  // Application Insights will automatically read the instrumentation
+  // key from the APPINSIGHTS_INSTRUMENTATIONKEY environment variable.
+  setupAppInsights()
     .setAutoDependencyCorrelation(true)
     .setAutoCollectConsole(true)
     .setAutoCollectPerformance(true)

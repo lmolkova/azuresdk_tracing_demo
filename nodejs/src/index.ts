@@ -10,12 +10,11 @@ const PORT = getEnvironmentVariable("SERVER_PORT");
 const app = express();
 app.use(express.json());
 
-// TODO: what HTTP endpoints should this service accept?
 const { producer } = initializeEventHub();
 
 app.post("/message", async (req, res) => {
   await producer.sendBatch([{ body: req.body }]);
-  res.json({ message: "Sent" });
+  res.json({ message: "Successfully sent a message to Event Hubs" });
 });
 
 app.listen(PORT, async () => {

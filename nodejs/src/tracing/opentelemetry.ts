@@ -1,9 +1,6 @@
 import { NodeTracerProvider } from "@opentelemetry/node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import {
-  ConsoleSpanExporter,
-  SimpleSpanProcessor
-} from "@opentelemetry/tracing";
+import { SimpleSpanProcessor } from "@opentelemetry/tracing";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { Resource } from "@opentelemetry/resources";
 import { JaegerExporter } from "@opentelemetry/exporter-jaeger";
