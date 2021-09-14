@@ -28,12 +28,13 @@ If you're running it with Azure Monitor, please also add
 `APPINSIGHTS_INSTRUMENTATIONKEY= <your app insights key>`
 
 - Run demo with `docker-compose -f docker-compose_applicationinsights.yml up --build` (for AzureMonitor) or `docker-compose_jaeger.yml` (for Jaeger).
-  
+
 ### Exposed endpoints
 
 - `POST http://localhost:8080/messages?message=hi`: java application, will send message to EventHub
 - `GET http://localhost:5000/weatherforecast`: .NET app
-  
+- `POST http://localhost:3000/message`: nodejs application, will send the JSON body of the request to EventHub
+
 ### Diagram
 
 TODO
