@@ -21,6 +21,8 @@ CHECKPOINT_STORAGE_ACCESS_KEY= <storage access key>
 CHECKPOINT_STORAGE_ACCOUNT= <storage account name for checkpointing>
 CHECKPOINT_CONTAINER_NAME= <storage container name for checkpointin>
 CHECKPOINT_STORAGE_CONNECTION_STRING= <Full storage connection string for checkpointing, sorry>
+SERVICE_BUS_QUEUE_NAME= <Queue name of servicebus>
+SERVICE_BUS_CONN_STR= <Connection String for Servicebus>
 ```
 
 If you're running it with Azure Monitor, please also add
@@ -34,6 +36,8 @@ If you're running it with Azure Monitor, please also add
 - `POST http://localhost:8080/messages?message=hi`: java application, will send message to EventHub
 - `GET http://localhost:5000/weatherforecast`: .NET app
 - `POST http://localhost:3000/message`: nodejs application, will send the JSON body of the request to EventHub
+- `GET http://localhost:8080/messaging/servicebus/message/hi`: python application, will send message to servicebus
+- `GET http://localhost:8080/messaging/eventhub`: python application, will receive messages from EventHub
 
 ### Diagram
 

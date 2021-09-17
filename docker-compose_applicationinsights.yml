@@ -50,5 +50,21 @@ services:
       - EventHub:EventHubName=${EVENTHUB_NAME}
       - Storage:ConnectionString=${CHECKPOINT_STORAGE_CONNECTION_STRING}
       - Storage:BlobContainerName=${CHECKPOINT_CONTAINER_NAME}
+  python:
+    build: ./python
+    ports:
+      - "8000:80"
+    networks:
+      - demo
+    environment:
+      - ApplicationInsights:InstrumentationKey=${APPINSIGHTS_INSTRUMENTATIONKEY}
+      - EventHub:ConnectionString=${EVENTHUB_CONNECTION_STRING}
+      - EventHub:EventHubName=${EVENTHUB_NAME}
+      - EventHub:EventHubConsumerGroup=${EVENTHUB_CONSUMER_GROUP}
+      - Storage:ConnectionString=${CHECKPOINT_STORAGE_CONNECTION_STRING}
+      - Storage:BlobContainerName=${CHECKPOINT_CONTAINER_NAME}
+      - Storage:BlobContainerName=${CHECKPOINT_CONTAINER_NAME}
+      - ServiceBus:ConnectionString=${SERVICE_BUS_CONN_STR}
+      - ServiceBus:QueueName=${SERVICE_BUS_QUEUE_NAME}
 networks:
   demo:
