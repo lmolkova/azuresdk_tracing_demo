@@ -1,0 +1,7 @@
+azure-servicebus
+azure-eventhub-checkpointstoreblob
+django
+opentelemetry-sdk
+azure-core-tracing-opentelemetry
+azure-monitor-opentelemetry-exporter
+jaeger
