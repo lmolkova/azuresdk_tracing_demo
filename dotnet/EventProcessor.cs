@@ -1,11 +1,14 @@
 ﻿using Azure.Messaging.EventHubs;
 using Azure.Messaging.EventHubs.Consumer;
 using Azure.Messaging.EventHubs.Processor;
+using Azure.Messaging.EventHubs.Producer;
 using Azure.Storage.Blobs;
+using Microsoft.Extensions.Azure;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,10 +20,15 @@ namespace dotnet
         private readonly EventProcessorClient processor;
         private readonly BlobContainerClient containterClient;
 
-        public EventProcessor(IOptions<EventHubConfigurationOptions> eventHubOptions, IOptions<StorageConfigurationOptions> storageOptions, ILogger<EventProcessor> logger)
+        public EventProcessor(BlobServiceClient blobServiceClient, ILogger<EventProcessor> logger, IConfiguration configuration)
         {
-            this.containterClient = new BlobContainerClient(storageOptions.Value.ConnectionString, storageOptions.Value.BlobContainerName);
-            this.processor = new EventProcessorClient(containterClient, EventHubConsumerClient.DefaultConsumerGroupName, eventHubOptions.Value.ConnectionString, eventHubOptions.Value.EventHubName);
+            this.containterClient = blobServiceClient.GetBlobContainerClient(configuration.GetSection("Storage").GetValue<string>("BlobContainerName"));
+            this.processor = new EventProcessorClient(
+                containterClient,
+                EventHubConsumerClient.DefaultConsumerGroupName,
+                configuration["EventHub:ConnectionString"],
+                configuration["EventHub:EventHubName"]);
+
             this.logger = logger;
         }
 
@@ -55,7 +63,13 @@ namespace dotnet
         private async Task ProcessEventHandler(ProcessEventArgs eventArgs)
         {
             if (eventArgs.HasEvent) {
-                logger.LogInformation("Received message {message} from partition {partition}", eventArgs.Data.EventBody.ToString(), eventArgs.Partition);
+                eventArgs.Data.Properties.TryGetValue("diagnostic-id", out var diagnsosticId);
+                eventArgs.Data.Properties.TryGetValue("Diagnostic-Id", out var DiagnsosticId);
+                logger.LogInformation("Received message {message} from partition {partition}, current activity {}, diag-id {}, Diag0Id {}", eventArgs.Data.EventBody.ToString(), eventArgs.Partition, Activity.Current?.Id,
+                    diagnsosticId, DiagnsosticId);
+
+                //var cc = this.containterClient.GetBlobClient("123");
+                //var props = await cc.GetPropertiesAsync();
             }
 
             await eventArgs.UpdateCheckpointAsync();

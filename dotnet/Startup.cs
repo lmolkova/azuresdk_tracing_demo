@@ -7,28 +7,10 @@ using Microsoft.OpenApi.Models;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Exporter;
+using Microsoft.Extensions.Azure;
 
 namespace dotnet
 {
-    class EventHubConfigurationOptions
-    {
-        public EventHubConfigurationOptions() 
-        {
-        }
-        public string ConnectionString { get; set; }
-        public string EventHubName { get; set; }
-    }
-
-    class StorageConfigurationOptions
-    {
-        public StorageConfigurationOptions()
-        {
-        }
-        public string ConnectionString { get; set; }
-        public string BlobContainerName { get; set; }
-    }
-
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -43,8 +25,12 @@ namespace dotnet
         {
             services.AddControllers();
             services.AddHttpClient();
-            services.Configure<EventHubConfigurationOptions>(this.Configuration.GetSection("EventHub"));
-            services.Configure<StorageConfigurationOptions>(this.Configuration.GetSection("Storage"));
+            services.AddAzureClients(
+                builder => {
+                    builder.ConfigureDefaults(Configuration.GetSection("Defaults"));
+
+                    builder.AddBlobServiceClient(Configuration.GetSection("Storage"));
+                });
             services.AddHostedService<EventProcessor>();
 
             var exporter = this.Configuration.GetValue<string>("TELEMETRY_DESTINATION").ToLowerInvariant();
