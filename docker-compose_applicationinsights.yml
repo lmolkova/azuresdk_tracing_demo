@@ -53,18 +53,20 @@ services:
   python:
     build: ./python
     ports:
-      - "8000:80"
+      - "8000:8000"
     networks:
       - demo
     environment:
-      - ApplicationInsights:InstrumentationKey=${APPINSIGHTS_INSTRUMENTATIONKEY}
-      - EventHub:ConnectionString=${EVENTHUB_CONNECTION_STRING}
-      - EventHub:EventHubName=${EVENTHUB_NAME}
-      - EventHub:EventHubConsumerGroup=${EVENTHUB_CONSUMER_GROUP}
-      - Storage:ConnectionString=${CHECKPOINT_STORAGE_CONNECTION_STRING}
-      - Storage:BlobContainerName=${CHECKPOINT_CONTAINER_NAME}
-      - Storage:BlobContainerName=${CHECKPOINT_CONTAINER_NAME}
-      - ServiceBus:ConnectionString=${SERVICE_BUS_CONN_STR}
-      - ServiceBus:QueueName=${SERVICE_BUS_QUEUE_NAME}
+      - TELEMETRY_DESTINATION=azmonexporter
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=python-demo
+      - APPLICATIONINSIGHTS_CONNECTION_STRING=${APPLICATIONINSIGHTS_CONNECTION_STRING}
+      - EVENTHUB_CONNECTION_STRING=${EVENTHUB_CONNECTION_STRING}
+      - EVENTHUB_CONSUMER_GROUP=${EVENTHUB_CONSUMER_GROUP}
+      - EVENTHUB_NAME=${EVENTHUB_NAME}
+      - CHECKPOINT_STORAGE_CONNECTION_STRING=${CHECKPOINT_STORAGE_CONNECTION_STRING}
+      - CHECKPOINT_CONTAINER_NAME=${CHECKPOINT_CONTAINER_NAME}
+      - SERVICE_BUS_CONNECTION_STRING=${SERVICE_BUS_CONNECTION_STRING}
+      - SERVICE_BUS_QUEUE_NAME=${SERVICE_BUS_QUEUE_NAME}
+      - OTEL_PYTHON_LOG_CORRELATION=true
 networks:
   demo:
