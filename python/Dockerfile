@@ -1,3 +1,5 @@
+FROM python:3
+
 #makedir
 WORKDIR /python
 
@@ -6,9 +8,9 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy source code
-COPY /python .
+COPY . .
 
 EXPOSE 8000
-ENV PORT=8000 
+
 # run
 CMD ["python", "manage.py", "runserver"]
