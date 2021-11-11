@@ -4,22 +4,19 @@ spring:
   cloud:
     azure:
       eventhub:
-        connection-string: Endpoint=sb://tracingdemohub.servicebus.windows.net/;SharedAccessKeyName=default;SharedAccessKey=nsXIr17MHDaxtMUbptVOQOS9OQ0ZJ2qPPPxeATCCiIo=;
-        checkpoint-storage-account: javachpnt
-        checkpoint-access-key: vQe4XRU4ymlew0BI0B1a6YT1234v4QN67P1UjrtX8BHFaG6r5a4NfsZHjwd6MXYqFIr3Rl4UmPTdbF5O/Mv/iA==
-        checkpoint-container: checkpoints
-        eventhub-name: javahub
-      storage:
-        connection-string: DefaultEndpointsProtocol=https;AccountName=javachpnt;AccountKey=vQe4XRU4ymlew0BI0B1a6YT1234v4QN67P1UjrtX8BHFaG6r5a4NfsZHjwd6MXYqFIr3Rl4UmPTdbF5O/Mv/iA==;EndpointSuffix=core.windows.net
-        queue-name: testme
+        connection-string: ${EVENTHUB_CONNECTION_STRING}
+        checkpoint-storage-account: ${CHECKPOINT_STORAGE_ACCOUNT}
+        checkpoint-access-key: ${CHECKPOINT_STORAGE_ACCESS_KEY}
+        checkpoint-container: ${CHECKPOINT_CONTAINER_NAME}
+        eventhub-name: ${EVENTHUB_NAME}
       eventgrid:
-        endpoint: https://limolkova-eventgrid.westus2-1.eventgrid.azure.net/api/events
-        key: m1xT7ZfDEfhui/kj/N4/f+Q82ovt0uS66b98oltZ0A0=
+        endpoint: ${EVENT_GRID_ENDPOINT}
+        key: ${EVENT_GRID_KEY}
 
     stream:
       bindings:
         consume-in-0:
-          destination: javahub
+          destination: ${EVENTHUB_NAME}
           group: $Default
 
       eventhub:
